@@ -10,9 +10,7 @@ export class PaymentsService {
   private readonly stripe = new Stripe(envs.stripeSecret);
   private readonly logger = new Logger('PaymentsService');
 
-  constructor(
-    @Inject(NATS_SERVICE) private readonly client: ClientProxy
-  ){}
+  constructor(@Inject(NATS_SERVICE) private readonly client: ClientProxy) {}
 
   async createPaymentSession(paymentSessionDto: PaymentSessionDto) {
     const { currency, items, orderId } = paymentSessionDto;
@@ -49,7 +47,7 @@ export class PaymentsService {
       cancelUrl: session.cancel_url,
       successUrl: session.success_url,
       url: session.url,
-    }
+    };
   }
 
   async stripeWebhook(req: Request, res: Response) {
@@ -82,7 +80,7 @@ export class PaymentsService {
           stripePaymentId: chargeSucceeded.id,
           orderId: chargeSucceeded.metadata.orderId,
           receiptUrl: chargeSucceeded.receipt_url,
-        }
+        };
 
         // this.logger.log({payload});
         this.client.emit('payment.succeeded', payload);
